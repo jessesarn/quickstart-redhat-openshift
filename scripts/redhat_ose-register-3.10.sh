@@ -7,10 +7,10 @@ yum clean all
 rm -rf /var/cache/yum
 
 
-subscription-manager register --username=${REDHAT_USERNAME} --password=${REDHAT_PASSWORD} --force
+subscription-manager register --username=${REDHAT_USERNAME} --password="${REDHAT_PASSWORD}" --force
 if [ $? -ne 0 ]; then
 	subscription-manager clean
-	subscription-manager register --username=${REDHAT_USERNAME} --password=${REDHAT_PASSWORD} --force
+	subscription-manager register --username=${REDHAT_USERNAME} --password="${REDHAT_PASSWORD}" --force
 fi
 
 subscription-manager status

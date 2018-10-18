@@ -11,7 +11,7 @@ qs_enable_epel &> /var/log/userdata.qs_enable_epel.log
 
 qs_retry_command 25 aws s3 cp ${QS_S3URI}scripts/redhat_ose-register-${OCP_VERSION}.sh ~/redhat_ose-register.sh
 chmod 755 ~/redhat_ose-register.sh
-qs_retry_command 20 ~/redhat_ose-register.sh ${RH_USER} ${RH_PASS} ${RH_POOLID}
+qs_retry_command 20 ~/redhat_ose-register.sh ${RH_USER} "${RH_PASS}" ${RH_POOLID}
 
 # NOTE: Doesn't work with Ansible 2.7 at the moment. TC - 16 Oct 2018
 curl  --retry 0  -Ls https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.6.3-1.el7.ans.noarch.rpm -o ansible-2.6.3-1.el7.ans.noarch.rpm
@@ -38,6 +38,9 @@ qs_retry_command 10 cfn-init -v --stack ${AWS_STACKNAME} --resource AnsibleConfi
 
 echo openshift_master_cluster_hostname=${INTERNAL_MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
 echo openshift_master_cluster_public_hostname=${MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
+
+echo "oreg_auth_user=${RH_USER}" >> /tmp/openshift_inventory_userdata_vars
+echo "oreg_auth_password=${RH_PASS}" >> /tmp/openshift_inventory_userdata_vars
 
 if [ "$(echo ${MASTER_ELBDNSNAME} | grep -c '\.elb\.amazonaws\.com')" == "0" ] ; then
     echo openshift_master_default_subdomain=${MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
